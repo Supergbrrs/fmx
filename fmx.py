@@ -28,7 +28,7 @@ df["Duração Real"] = pd.to_timedelta(df["Duração Real"], errors="coerce")
 df["Duração (segundos)"] = df["Duração Real"].dt.total_seconds()
 
 # Converter coluna de Data e Hora para datetime no formato brasileiro
-df["Data e Hora"] = pd.to_datetime(df["Data e Hora"], format="%d/%m/%Y %H:%M:%S", dayfirst=True, errors="coerce")
+df["Data e Hora"] = pd.to_datetime(df["Data e Hora"], dayfirst=True, errors="coerce")
 
 # Criar filtro interativo para datas
 data_inicio = st.date_input("Data inicial", df["Data e Hora"].min().date())
