@@ -7,7 +7,7 @@ import io
 # Carregar o arquivo XLSX
 @st.cache_data
 def load_data():
-    df = pd.read_excel(r"C:\Users\Guto\Desktop\Backup\Saldo V1\RelatorioFMX.xlsx", engine="openpyxl")
+    df = pd.read_excel(r"RelatorioFMX.xlsx", engine="openpyxl")
     df.columns = df.columns.str.strip()  # Remove espaços extras nos nomes de colunas
     return df
 
