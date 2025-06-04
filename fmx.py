@@ -27,13 +27,12 @@ df["Duração Real"] = df["Duração Real"].astype(str)  # Converte para string
 df["Duração Real"] = pd.to_timedelta(df["Duração Real"], errors="coerce")
 df["Duração (segundos)"] = df["Duração Real"].dt.total_seconds()
 
-# Converter coluna de Data e Hora para datetime e formatá-la corretamente
-df["Data e Hora"] = pd.to_datetime(df["Data e Hora"], errors="coerce")
-df["Data e Hora"] = df["Data e Hora"].dt.strftime("%d/%m/%Y %H:%M:%S")  # Formato brasileiro
+# Converter coluna de Data e Hora para datetime no formato brasileiro
+df["Data e Hora"] = pd.to_datetime(df["Data e Hora"], format="%d/%m/%Y %H:%M:%S", dayfirst=True, errors="coerce")
 
 # Criar filtro interativo para datas
-data_inicio = st.date_input("Data inicial", pd.to_datetime(df["Data e Hora"]).min().date())
-data_fim = st.date_input("Data final", pd.to_datetime(df["Data e Hora"]).max().date())
+data_inicio = st.date_input("Data inicial", df["Data e Hora"].min().date())
+data_fim = st.date_input("Data final", df["Data e Hora"].max().date())
 
 # Converter datas do filtro para datetime corretamente
 data_inicio = pd.to_datetime(data_inicio)
@@ -41,8 +40,7 @@ data_fim = pd.to_datetime(data_fim)
 
 # Filtrar dados dentro do intervalo correto
 df_filtrado = df[
-    (pd.to_datetime(df["Data e Hora"]) >= data_inicio) & 
-    (pd.to_datetime(df["Data e Hora"]) <= data_fim)
+    (df["Data e Hora"] >= data_inicio) & (df["Data e Hora"] <= data_fim)
 ]
 
 # Converter a coluna "Destino" para string para exibir corretamente
@@ -58,8 +56,7 @@ st.dataframe(df["SIP code"].value_counts())
 
 # Gráfico de tendência das ligações ao longo do tempo (após conversão correta)
 df_filtrado_indexado = df_filtrado.copy()
-df_filtrado_indexado["Data e Hora"] = pd.to_datetime(df_filtrado_indexado["Data e Hora"], errors="coerce")
-df_filtrado_indexado = df_filtrado_indexado.set_index("Data e Hora")
+df_filtrado_indexado.set_index("Data e Hora", inplace=True)
 
 st.subheader("Tendência de Ligações ao Longo do Tempo")
 fig, ax = plt.subplots(figsize=(10, 5))
@@ -118,3 +115,5 @@ st.download_button(
 )
 
 st.success("Painel atualizado com todas as correções e melhorias! 🚀")
+
+
